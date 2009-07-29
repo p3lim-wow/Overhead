@@ -15,21 +15,24 @@ end
 local function updateObjects(self)
 	self:SetHeight(7.5)
 	self:SetWidth(100)
+	self:ClearAllPoints()
 	self = self:GetParent()
 
-	self.cast:ClearAllPoints()
+	self.health:SetPoint('CENTER', self)
 	self.cast:SetPoint('TOP', self.health, 'BOTTOM', 0, -6)
 
 	self.icon:SetHeight(0.01)
 	self.icon:SetWidth(0.01)
 
-	local level = tonumber(self.level:GetText())
+	self.level:ClearAllPoints()
+	self.level:SetPoint('RIGHT', health, 'LEFT', -3, 0)
+
 	if(self.boss:IsShown()) then
 		self.level:SetText('B+')
 	elseif(self.elite:IsShown()) then
-		self.level:SetFormattedText('%s+', level)
+		self.level:SetFormattedText('%s+', self.level:GetText())
 	else
-		self.level:SetText(level)
+		self.level:SetText(self.level:GetText())
 	end
 end
 
@@ -59,8 +62,6 @@ local function createObjects(frame)
 	name:SetFont(font, 11, 'OUTLINE')
 	name:SetShadowOffset(0, 0)
 
-	level:ClearAllPoints()
-	level:SetPoint('RIGHT', health, 'LEFT', -3, 0)
 	level:SetFont(font, 9, 'OUTLINE')
 	level:SetShadowOffset(0, 0)
 

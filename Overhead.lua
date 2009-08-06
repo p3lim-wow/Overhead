@@ -38,7 +38,7 @@ end
 
 local function createObjects(frame)
 	local health, cast = frame:GetChildren()
-	local glow, healthBorder, castBorder, icon, highlight, name, level, boss, raid, elite = frame:GetRegions()
+	local glow, healthBorder, castShield, castBorder, icon, highlight, name, level, boss, raid, elite = frame:GetRegions()
 
 	health:SetStatusBarTexture(barTexture)
 	health.bg = health:CreateTexture(nil, 'BORDER')
@@ -65,14 +65,20 @@ local function createObjects(frame)
 	level:SetFont(font, 9, 'OUTLINE')
 	level:SetShadowOffset(0, 0)
 
+	raid:SetHeight(16)
+	raid:SetWidth(16)
+	raid:ClearAllPoints()
+	raid:SetPoint('RIGHT', name, 'LEFT', 4, 0)
+
 	healthBorder:SetTexture(nil)
+	castShield:SetTexture(nil)
 	castBorder:SetTexture(nil)
 	highlight:SetTexture(nil)
 	glow:SetTexture(nil)
 	boss:SetTexture(nil)
 	elite:SetTexture(nil)
 
-	frame.level, frame.boss, frame.elite = level, boss, elite
+	frame.level, frame.boss, frame.elite= level, boss, elite
 	frame.health, frame.cast, frame.icon = health, cast, icon
 end
 

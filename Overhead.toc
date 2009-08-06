@@ -1,6 +1,7 @@
-## Interface: 30100
+## Interface: 30200
 ## Author: p3lim
 ## Title: Overhead
+## Version: Alpha
 ## Notes: Slick nameplates
 
 Overhead.lua

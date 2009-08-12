@@ -8,8 +8,12 @@ local numChildren = -1
 local frames = {}
 
 local function updateTime(self, curValue)
-	local minValue, maxValue = self:GetMinMaxValues()
-	self.time:SetFormattedText('%.1f', maxValue - curValue)
+	if(UnitChannelInfo('target')) then
+		self.time:SetFormattedText('%.1f', curValue)
+	else
+		local minValue, maxValue = self:GetMinMaxValues()
+		self.time:SetFormattedText('%.1f', maxValue - curValue)
+	end
 end
 
 local function updateObjects(self)

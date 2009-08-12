@@ -16,6 +16,12 @@ local function updateTime(self, curValue)
 	end
 end
 
+local function updateCastbar(self, shielded)
+	if(shielded) then
+		self:SetStatusBarColor(0.8, 1, .8)
+	end
+end
+
 local function updateObjects(self)
 	self:SetHeight(7.5)
 	self:SetWidth(100)
@@ -60,6 +66,7 @@ local function createObjects(frame)
 
 	cast:HookScript('OnValueChanged', updateTime)
 	updateTime(cast, cast:GetValue())
+	updateCastbar(cast, castShield:IsShown())
 
 	name:ClearAllPoints()
 	name:SetPoint('BOTTOM', health, 'TOP', 0, 3)

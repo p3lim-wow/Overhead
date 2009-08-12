@@ -113,11 +113,9 @@ local function hookFrames(...)
 	end
 end
 
-local function onUpdate()
+CreateFrame('Frame'):SetScript('OnUpdate', function()
 	if(WorldFrame:GetNumChildren() ~= numChildren) then
 		numChildren = WorldFrame:GetNumChildren()
 		hookFrames(WorldFrame:GetChildren())
 	end
-end
-
-CreateFrame('Frame'):SetScript('OnUpdate', onUpdate)
+end)

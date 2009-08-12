@@ -76,10 +76,9 @@ local function createObjects(frame)
 	level:SetFont(font, 9, 'OUTLINE')
 	level:SetShadowOffset(0, 0)
 
-	raid:SetHeight(16)
-	raid:SetWidth(16)
+	raid:SetScale(0.6)
 	raid:ClearAllPoints()
-	raid:SetPoint('RIGHT', name, 'LEFT', 4, 0)
+	raid:SetPoint('RIGHT', name, 'LEFT', -4, 0)
 
 	healthBorder:SetTexture(nil)
 	castShield:SetTexture(nil)

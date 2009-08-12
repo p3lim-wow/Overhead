@@ -89,7 +89,7 @@ local function createObjects(frame)
 	boss:SetTexture(nil)
 	elite:SetTexture(nil)
 
-	frame.level, frame.boss, frame.elite= level, boss, elite
+	frame.level, frame.boss, frame.elite = level, boss, elite
 	frame.health, frame.cast, frame.icon = health, cast, icon
 end
 

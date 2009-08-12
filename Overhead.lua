@@ -41,8 +41,6 @@ local function updateObjects(self)
 		self.level:SetText('B+')
 	elseif(self.elite:IsShown()) then
 		self.level:SetFormattedText('%s+', self.level:GetText())
-	else
-		self.level:SetText(self.level:GetText())
 	end
 end
 

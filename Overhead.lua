@@ -94,8 +94,8 @@ local function createObjects(frame)
 end
 
 local function hookFrames(...)
-	for i = 1, select('#', ...) do
-		local frame = select(i, ...)
+	for index = 1, select('#', ...) do
+		local frame = select(index, ...)
 		local region = frame:GetRegions()
 
 		if(not frames[frame] and not frame:GetName() and region and region:GetObjectType() == 'Texture' and region:GetTexture() == overlayTexture) then

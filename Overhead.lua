@@ -74,7 +74,8 @@ local function createObjects(frame)
 	level:SetFont(font, 9, 'OUTLINE')
 	level:SetShadowOffset(0, 0)
 
-	raid:SetScale(0.6)
+	raid:SetHeight(9)
+	raid:SetWidth(9)
 	raid:ClearAllPoints()
 	raid:SetPoint('RIGHT', name, 'LEFT', -4, 0)
 

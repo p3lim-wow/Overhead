@@ -29,7 +29,7 @@ local function UpdateThreat(frame)
 			frame.hp:SetStatusBarColor(1, 0.35, 0.2)
 		end
 	else
-		frame.hp:SetStatusBarColor(1/4, 1/4, 2/5)
+		frame.hp:SetStatusBarColor(0.3, 1, 0.3)
 	end
 end
 
@@ -42,6 +42,7 @@ local function UpdateObjects(frame)
 	frame.hp:SetPoint('CENTER', frame)
 
 	frame.name:SetText(frame.oldname:GetText())
+
 	HideObjects(frame)
 end
 
@@ -49,15 +50,13 @@ local function UpdateCastbar(frame)
 	frame:SetHeight(5)
 	frame:SetWidth(110)
 	frame:ClearAllPoints()
-	frame:SetPoint('TOP', frame:GetParent().hp, 'BOTTOM', 0, -6)
+	frame:SetPoint('TOP', frame:GetParent().hp, 'BOTTOM', 0, -5)
 
 	frame.icon:SetHeight(0.01)
 	frame.icon:SetWidth(0.01)
 
-	if(frame.shield:GetTexture()) then
+	if(not frame.shield:IsShown()) then
 		frame:SetStatusBarColor(1, 0.35, 0.2)
-	else
-		frame:SetStatusBarColor(1/4, 1/4, 2/5)
 	end
 end	
 
@@ -99,7 +98,7 @@ local function SkinObjects(frame)
 	local name = hp:CreateFontString(nil, 'OVERLAY')
 	name:SetPoint('BOTTOMLEFT', hp, 'TOPLEFT', 0, 2)
 	name:SetPoint('BOTTOMRIGHT', hp, 'TOPRIGHT', 0, 2)
-	name:SetFont(FONT, 9, 'OUTLINE')
+	name:SetFont(FONT, 8, 'OUTLINE')
 	frame.oldname = oldname
 	frame.name = name
 
@@ -111,7 +110,6 @@ local function SkinObjects(frame)
 	QueueObject(frame, oldname)
 	QueueObject(frame, level)
 	QueueObject(frame, bossicon)
-	QueueObject(frame, raidicon) -- todo: place and scale
 	QueueObject(frame, elite)
 
 	UpdateObjects(hp)

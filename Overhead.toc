@@ -4,4 +4,7 @@
 ## Version: Alpha
 ## Notes: Slick nameplates
 
+## LoadManagers: AddonLoader
+## X-LoadOn-Always: delayed
+
 Overhead.lua

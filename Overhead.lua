@@ -1,5 +1,5 @@
 local FONT = [=[Fonts\FRIZQT__.TTF]=]
-local TEXTURE = [=[Interface\AddOns\Overhead\minimalist]=]
+local TEXTURE = [=[Interface\ChatFrame\ChatFrameBackground]=]
 local OVERLAY = [=[Interface\TargetingFrame\UI-TargetingFrame-Flash]=]
 
 local numChildren = -1

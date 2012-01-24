@@ -1,10 +1,7 @@
-## Interface: 30200
+## Interface: 40300
 ## Author: p3lim
 ## Title: Overhead
 ## Version: Alpha
 ## Notes: Slick nameplates
-
-## LoadManagers: AddonLoader
-## X-LoadOn-Always: delayed
 
 Overhead.lua

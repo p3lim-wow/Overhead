@@ -1,150 +1,137 @@
 local FONT = [=[Fonts\FRIZQT__.TTF]=]
 local TEXTURE = [=[Interface\ChatFrame\ChatFrameBackground]=]
-local OVERLAY = [=[Interface\TargetingFrame\UI-TargetingFrame-Flash]=]
 
-local numChildren = -1
-local frames = {}
+local function Update(self)
+	self.Health:SetSize(100, 6)
+	self.Health:ClearAllPoints()
+	self.Health:SetPoint('CENTER', self)
 
-local function QueueObject(parent, object)
-	parent.queue = parent.queue or {}
-	parent.queue[object] = true
+	self.Name:SetText(self.title:GetText())
+	self.Highlight:SetAllPoints(self.Health)
 end
 
-local function HideObjects(parent)
-	for object in pairs(parent.queue) do
-		if(object:GetObjectType() == 'Texture') then
-			object:SetTexture(nil)
+local function UpdateThreat(self, elapsed)
+	self.elapsed = (self.elapsed or 0) + elapsed
+
+	if(self.elapsed > 0.2) then
+		if(self.threat:IsShown()) then
+			local r, g, b = self.threat:GetVertexColor()
+			if(b > 0.7) then
+				self.Health:SetStatusBarColor(2/3, 2/3, 1/4)
+			else
+				self.Health:SetStatusBarColor(2/3, 1/4, 1/5)
+			end
 		else
-			object:Hide()
+			self.Health:SetStatusBarColor(1/6, 1/6, 2/7)
 		end
 	end
 end
 
-local function UpdateThreat(frame)
-	if(frame.region:IsShown()) then
-		local _, val = frame.region:GetVertexColor()
-		if(val > 0.7) then
-			frame.hp:SetStatusBarColor(1, 1, 0.3)
-		else
-			frame.hp:SetStatusBarColor(1, 0.35, 0.2)
-		end
+local function UpdateCastbar(self)
+	local parent = self:GetParent()
+	self:SetSize(100, 6)
+	self:ClearAllPoints()
+	self:SetPoint('TOP', parent.Health, 'BOTTOM', 0, -5)
+
+	if(parent.shield:IsShown()) then
+		self:SetStatusBarColor(1, 1/4, 1/5)
 	else
-		frame.hp:SetStatusBarColor(0.3, 1, 0.3)
+		self:SetStatusBarColor(3/4, 3/4, 3/4)
 	end
 end
 
-local function UpdateObjects(frame)
-	frame = frame:GetParent()
+local function InitiateFrame(self)
+	local Health, Castbar = self:GetChildren()
 
-	frame.hp:SetHeight(5)
-	frame.hp:SetWidth(110)
-	frame.hp:ClearAllPoints()
-	frame.hp:SetPoint('CENTER', frame)
+	local offset = UIParent:GetScale() / Health:GetEffectiveScale()
+	local Backdrop = Health:CreateTexture(nil, 'BACKGROUND')
+	Backdrop:SetPoint('BOTTOMLEFT', -offset, -offset)
+	Backdrop:SetPoint('TOPRIGHT', offset, offset)
+	Backdrop:SetTexture(0, 0, 0)
+	Health.Backdrop = Backdrop
 
-	frame.name:SetText(frame.oldname:GetText())
+	local Background = Health:CreateTexture(nil, 'BORDER')
+	Background:SetAllPoints()
+	Background:SetTexture(1/3, 1/3, 1/3)
 
-	HideObjects(frame)
+	Health:SetStatusBarTexture(TEXTURE)
+	self.Health = Health
+
+	local offset = UIParent:GetScale() / Castbar:GetEffectiveScale()
+	local Backdrop = Castbar:CreateTexture(nil, 'BACKGROUND')
+	Backdrop:SetPoint('BOTTOMLEFT', -offset, -offset)
+	Backdrop:SetPoint('TOPRIGHT', offset, offset)
+	Backdrop:SetTexture(0, 0, 0)
+	Castbar.Backdrop = Backdrop
+
+	local Background = Castbar:CreateTexture(nil, 'BORDER')
+	Background:SetAllPoints()
+	Background:SetTexture(1/3, 1/3, 1/3)
+
+	Castbar:HookScript('OnShow', UpdateCastbar)
+	Castbar:HookScript('OnSizeChanged', UpdateCastbar)
+	Castbar:SetStatusBarTexture(TEXTURE)
+
+	local Name = Health:CreateFontString(nil, 'OVERLAY')
+	Name:SetPoint('BOTTOMLEFT', Health, 'TOPLEFT', 0, 2)
+	Name:SetPoint('BOTTOMRIGHT', Health, 'TOPRIGHT', 0, 2)
+	Name:SetFont(FONT, 8, 'OUTLINE')
+	self.Name = Name
+
+	local threat, overlay, Highlight, title, level, boss, RaidIcon, state = self:GetRegions()
+	local bar, border, shield, icon = Castbar:GetRegions()
+
+	Highlight:SetTexture(TEXTURE)
+	Highlight:SetVertexColor(1, 1, 1, 1/4)
+	self.Highlight = Highlight
+
+	RaidIcon:ClearAllPoints()
+	RaidIcon:SetPoint('LEFT', Health, 'RIGHT', 2, 0)
+	RaidIcon:SetSize(12, 12)
+
+	self.title = title
+	self.shield = shield
+	self.threat = threat
+
+	threat:SetTexture(nil)
+	overlay:SetTexture(nil)
+	boss:SetTexture(nil)
+	state:SetTexture(nil)
+	border:SetTexture(nil)
+	shield:SetTexture(nil)
+	icon:SetWidth(0.01)
+	title:SetWidth(0.01)
+	level:SetWidth(0.01)
+
+	self:SetScript('OnUpdate', UpdateThreat)
+	self:SetScript('OnShow', Update)
+	Update(self)
 end
 
-local function UpdateCastbar(frame)
-	frame:SetHeight(5)
-	frame:SetWidth(110)
-	frame:ClearAllPoints()
-	frame:SetPoint('TOP', frame:GetParent().hp, 'BOTTOM', 0, -5)
+do
+	local frame
+	local select = select
 
-	frame.icon:SetHeight(0.01)
-	frame.icon:SetWidth(0.01)
+	local function ProcessFrames(last, current)
+		for index = last + 1, current do
+			local frame = select(index, WorldFrame:GetChildren())
 
-	if(not frame.shield:IsShown()) then
-		frame:SetStatusBarColor(1, 0.35, 0.2)
-	end
-end	
-
-local function SkinObjects(frame)
-	local hp, cb = frame:GetChildren()
-	local threat, hpborder, cbshield, cbborder, cbicon, overlay, oldname, level, bossicon, raidicon, elite = frame:GetRegions()
-
-	local offset = UIParent:GetScale() / hp:GetEffectiveScale()
-	local hpbg = hp:CreateTexture(nil, 'BACKGROUND')
-	hpbg:SetPoint('BOTTOMRIGHT', offset, -offset)
-	hpbg:SetPoint('TOPLEFT', -offset, offset)
-	hpbg:SetTexture(0, 0, 0)
-
-	local hpbg2 = hp:CreateTexture(nil, 'BORDER')
-	hpbg2:SetAllPoints(hp)
-	hpbg2:SetTexture(1/3, 1/3, 1/3)
-
-	hp:HookScript('OnShow', UpdateObjects)
-	hp:SetStatusBarTexture(TEXTURE)
-	frame.hp = hp
-
-	local offset = UIParent:GetScale() / cb:GetEffectiveScale()
-	local cbbg = cb:CreateTexture(nil, 'BACKGROUND')
-	cbbg:SetPoint('BOTTOMRIGHT', offset, -offset)
-	cbbg:SetPoint('TOPLEFT', -offset, offset)
-	cbbg:SetTexture(0, 0, 0)
-
-	local cbbg2 = cb:CreateTexture(nil, 'BORDER')
-	cbbg2:SetAllPoints(cb)
-	cbbg2:SetTexture(1/3, 1/3, 1/3)
-
-	cb.icon = cbicon
-	cb.shield = cbshield
-	cb:HookScript('OnShow', UpdateCastbar)
-	cb:HookScript('OnSizeChanged', UpdateCastbar)
-	cb:SetStatusBarTexture(TEXTURE)
-	frame.cb = cb
-
-	local name = hp:CreateFontString(nil, 'OVERLAY')
-	name:SetPoint('BOTTOMLEFT', hp, 'TOPLEFT', 0, 2)
-	name:SetPoint('BOTTOMRIGHT', hp, 'TOPRIGHT', 0, 2)
-	name:SetFont(FONT, 8, 'OUTLINE')
-	frame.oldname = oldname
-	frame.name = name
-
-	QueueObject(frame, threat)
-	QueueObject(frame, hpborder)
-	QueueObject(frame, cbshield)
-	QueueObject(frame, cbborder)
-	QueueObject(frame, overlay)
-	QueueObject(frame, oldname)
-	QueueObject(frame, level)
-	QueueObject(frame, bossicon)
-	QueueObject(frame, elite)
-
-	UpdateObjects(hp)
-	UpdateCastbar(cb)
-
-	frames[frame] = true
-end
-
-local select = select
-local function HookFrames(...)
-	for index = 1, select('#', ...) do
-		local frame = select(index, ...)
-		local region = frame:GetRegions()
-
-		if(not frames[frame] and not frame:GetName() and region and region:GetObjectType() == 'Texture' and region:GetTexture() == OVERLAY) then
-			SkinObjects(frame)
-			frame.region = region
+			local name = frame:GetName()
+			if(name and name:find('NamePlate%d')) then
+				InitiateFrame(frame)
+			end
 		end
 	end
-end
 
-CreateFrame('Frame'):SetScript('OnUpdate', function(self, elapsed)
-	if(WorldFrame:GetNumChildren() ~= numChildren) then
-		numChildren = WorldFrame:GetNumChildren()
-		HookFrames(WorldFrame:GetChildren())
-	end
+	local currentNum
+	local numChildren = 0
 
-	-- Threat Color Updates
-	if(self.elapsed and self.elapsed > 0.1) then
-		for frame in pairs(frames) do
-			UpdateThreat(frame)
+	CreateFrame('Frame'):SetScript('OnUpdate', function()
+		currentNum = WorldFrame:GetNumChildren()
+
+		if(currentNum ~= numChildren) then
+			ProcessFrames(numChildren, currentNum)
+			numChildren = currentNum
 		end
-
-		self.elapsed = 0
-	else
-		self.elapsed = (self.elapsed or 0) + elapsed
-	end
-end)
+	end)
+end

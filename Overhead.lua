@@ -114,7 +114,7 @@ do
 
 	local function ProcessFrames(last, current)
 		for index = last + 1, current do
-			local frame = select(index, WorldFrame:GetChildren())
+			frame = select(index, WorldFrame:GetChildren())
 
 			local name = frame:GetName()
 			if(name and name:find('NamePlate%d')) then

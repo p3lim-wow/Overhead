@@ -24,7 +24,7 @@ local function UpdateCastbar(self)
 	end
 end
 
-local function InitiateFrame(self)
+local function Initialize(self)
 	local Health, Castbar = self:GetChildren()
 
 	local offset = UIParent:GetScale() / Health:GetEffectiveScale()
@@ -94,13 +94,13 @@ do
 	local frame
 	local select = select
 
-	local function ProcessFrames(last, current)
+	local function Process(last, current)
 		for index = last + 1, current do
 			frame = select(index, WorldFrame:GetChildren())
 
 			local name = frame:GetName()
 			if(name and name:find('NamePlate%d')) then
-				InitiateFrame(frame)
+				Initialize(frame)
 			end
 		end
 	end
@@ -112,7 +112,7 @@ do
 		currentNum = WorldFrame:GetNumChildren()
 
 		if(currentNum ~= numChildren) then
-			ProcessFrames(numChildren, currentNum)
+			Process(numChildren, currentNum)
 			numChildren = currentNum
 		end
 	end)

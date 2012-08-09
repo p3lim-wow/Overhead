@@ -2,6 +2,8 @@ local FONT = [=[Fonts\FRIZQT__.TTF]=]
 local TEXTURE = [=[Interface\ChatFrame\ChatFrameBackground]=]
 
 local function Update(self)
+	local r, g, b = self.Health:GetStatusBarColor()
+	self.Health:SetStatusBarColor(r * 2/3, g * 2/3, b * 2/3)
 	self.Health:SetSize(100, 6)
 	self.Health:ClearAllPoints()
 	self.Health:SetPoint('CENTER', self)
@@ -10,30 +12,12 @@ local function Update(self)
 	self.Highlight:SetAllPoints(self.Health)
 end
 
-local function UpdateThreat(self, elapsed)
-	self.elapsed = (self.elapsed or 0) + elapsed
-
-	if(self.elapsed > 0.2) then
-		if(self.threat:IsShown()) then
-			local r, g, b = self.threat:GetVertexColor()
-			if(b > 0.7) then
-				self.Health:SetStatusBarColor(2/3, 2/3, 1/4)
-			else
-				self.Health:SetStatusBarColor(2/3, 1/4, 1/5)
-			end
-		else
-			self.Health:SetStatusBarColor(1/6, 1/6, 2/7)
-		end
-	end
-end
-
 local function UpdateCastbar(self)
-	local parent = self:GetParent()
 	self:SetSize(100, 6)
 	self:ClearAllPoints()
-	self:SetPoint('TOP', parent.Health, 'BOTTOM', 0, -5)
+	self:SetPoint('TOP', self:GetParent().Health, 'BOTTOM', 0, -4)
 
-	if(parent.shield:IsShown()) then
+	if(self.shield:IsShown()) then
 		self:SetStatusBarColor(1, 1/4, 1/5)
 	else
 		self:SetStatusBarColor(3/4, 3/4, 3/4)
@@ -62,7 +46,6 @@ local function InitiateFrame(self)
 	Backdrop:SetPoint('BOTTOMLEFT', -offset, -offset)
 	Backdrop:SetPoint('TOPRIGHT', offset, offset)
 	Backdrop:SetTexture(0, 0, 0)
-	Castbar.Backdrop = Backdrop
 
 	local Background = Castbar:CreateTexture(nil, 'BORDER')
 	Background:SetAllPoints()
@@ -79,7 +62,7 @@ local function InitiateFrame(self)
 	self.Name = Name
 
 	local threat, overlay, Highlight, title, level, boss, RaidIcon, state = self:GetRegions()
-	local bar, border, shield, icon = Castbar:GetRegions()
+	local _, border, shield, icon = Castbar:GetRegions()
 
 	Highlight:SetTexture(TEXTURE)
 	Highlight:SetVertexColor(1, 1, 1, 1/4)
@@ -90,8 +73,7 @@ local function InitiateFrame(self)
 	RaidIcon:SetSize(12, 12)
 
 	self.title = title
-	self.shield = shield
-	self.threat = threat
+	Castbar.shield = shield
 
 	threat:SetTexture(nil)
 	overlay:SetTexture(nil)
@@ -103,8 +85,8 @@ local function InitiateFrame(self)
 	title:SetWidth(0.01)
 	level:SetWidth(0.01)
 
-	self:SetScript('OnUpdate', UpdateThreat)
 	self:SetScript('OnShow', Update)
+
 	Update(self)
 end
 

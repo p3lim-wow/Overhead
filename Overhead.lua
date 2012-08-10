@@ -1,4 +1,4 @@
-local FONT = [=[Fonts\FRIZQT__.TTF]=]
+local FONT = [=[Interface\AddOns\Overhead\semplice.ttf]=]
 local TEXTURE = [=[Interface\ChatFrame\ChatFrameBackground]=]
 
 local function Update(self)
@@ -58,7 +58,7 @@ local function Initialize(self)
 	local Name = Health:CreateFontString(nil, 'OVERLAY')
 	Name:SetPoint('BOTTOMLEFT', Health, 'TOPLEFT', 0, 2)
 	Name:SetPoint('BOTTOMRIGHT', Health, 'TOPRIGHT', 0, 2)
-	Name:SetFont(FONT, 8, 'OUTLINE')
+	Name:SetFont(FONT, 6, 'OUTLINEMONOCHROME')
 	self.Name = Name
 
 	local threat, overlay, Highlight, title, level, boss, RaidIcon, state = self:GetRegions()

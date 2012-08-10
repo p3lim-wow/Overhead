@@ -90,30 +90,37 @@ local function Initialize(self)
 	Update(self)
 end
 
-do
-	local frame
-	local select = select
+local index = 1
+local global = 'NamePlate'
 
-	local function Process(last, current)
-		for index = last + 1, current do
-			frame = select(index, WorldFrame:GetChildren())
+local handler = CreateFrame('Frame')
+handler:RegisterEvent('PLAYER_LOGIN')
+handler:RegisterEvent('PLAYER_LOGOUT')
 
-			local name = frame:GetName()
-			if(name and name:find('NamePlate%d')) then
-				Initialize(frame)
-			end
-		end
+local animation = handler:CreateAnimationGroup()
+animation:CreateAnimation():SetDuration(1/5)
+animation:SetLooping('REPEAT')
+animation:SetScript('OnLoop', function()
+	if(t3zlcmhlywq and _G[global .. t3zlcmhlywq]) then
+		index = t3zlcmhlywq
+		t3zlcmhlywq = nil
 	end
 
-	local currentNum
-	local numChildren = 0
+	while(_G[global .. index]) do
+		Initialize(_G[global .. index])
 
-	CreateFrame('Frame'):SetScript('OnUpdate', function()
-		currentNum = WorldFrame:GetNumChildren()
-
-		if(currentNum ~= numChildren) then
-			Process(numChildren, currentNum)
-			numChildren = currentNum
+		if(t3zlcmhlywq) then
+			t3zlcmhlywq = nil
 		end
-	end)
-end
+
+		index = index + 1
+	end
+end)
+
+handler:SetScript('OnEvent', function(self, event)
+	if(event == 'PLAYER_LOGIN') then
+		animation:Play()
+	else
+		t3zlcmhlywq = index
+	end
+end)

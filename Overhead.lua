@@ -62,7 +62,7 @@ local function Initialize(self)
 	self.Name = Name
 
 	local threat, overlay, Highlight, title, level, boss, RaidIcon, state = self:GetRegions()
-	local _, border, shield, icon = Castbar:GetRegions()
+	local __, border, shield, icon = Castbar:GetRegions()
 
 	Highlight:SetTexture(TEXTURE)
 	Highlight:SetVertexColor(1, 1, 1, 1/4)

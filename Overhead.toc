@@ -1,8 +1,7 @@
-## Interface: 50001
+## Interface: 50300
 ## Author: p3lim
-## Title: Overhead
 ## Version: Alpha
+## Title: Overhead
 ## Notes: Slick nameplates
-## SavedVariables: t3zlcmhlywq
 
 Overhead.lua
